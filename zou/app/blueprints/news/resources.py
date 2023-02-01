@@ -7,7 +7,7 @@ from zou.app.services.exception import NewsNotFoundException
 
 
 class ProjectNewsResource(Resource, ArgsMixin):
-    @jwt_required
+    @jwt_required()
     def get(self, project_id):
         """
         Retrieve all news related to a given project
@@ -124,7 +124,7 @@ class ProjectNewsResource(Resource, ArgsMixin):
 
 
 class ProjectSingleNewsResource(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, project_id, news_id):
         """
         Retrieve a single given news related to a given project
