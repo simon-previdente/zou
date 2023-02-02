@@ -100,16 +100,18 @@ class ProjectNewsResource(Resource, ArgsMixin):
         return result
 
     def get_arguments(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument("only_preview", default=False, type=bool)
-        parser.add_argument("task_type_id", default=None)
-        parser.add_argument("task_status_id", default=None)
-        parser.add_argument("person_id", default=None)
-        parser.add_argument("page", default=1, type=int)
-        parser.add_argument("page_size", default=50, type=int)
-        parser.add_argument("after", default=None)
-        parser.add_argument("before", default=None)
-        args = parser.parse_args()
+        args = self.get_args(
+            [
+                {"name": "only_preview", "default": False, "type": bool},
+                "task_type_id",
+                "task_status_id",
+                "person_id",
+                {"name": "page", "default": 1, "type": int},
+                {"name": "page_size", "default": 50, "type": int},
+                "after",
+                "before",
+            ]
+        )
 
         return (
             args["only_preview"],
