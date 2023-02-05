@@ -110,7 +110,8 @@ class ProjectNewsResource(Resource, ArgsMixin):
                 {"name": "page_size", "default": 50, "type": int},
                 "after",
                 "before",
-            ]
+            ],
+            location="values",
         )
 
         return (
