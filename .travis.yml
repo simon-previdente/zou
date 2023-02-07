@@ -10,11 +10,13 @@ addons:
   apt:
     packages:
       - ffmpeg
+      - postgresql-12
 env:
   global:
   - PGPORT=5432
   - PGUSER=postgres
   - PGHOST=localhost
+  - SQLALCHEMY_WARN_20=1
   - DEBUG=1
   - MAIL_DEBUG=1
   - FLASK_APP=zou.app
