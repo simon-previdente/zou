@@ -77,7 +77,7 @@ class PersonResource(BaseModelResource, ArgsMixin):
         else:
             raise permissions.PermissionDenied
 
-    @jwt_required
+    @jwt_required()
     def get(self, instance_id):
         """
         Retrieves the given person.

@@ -458,7 +458,7 @@ class PersonMonthAllTimeSpentsResource(Resource):
     Get all time spents for a given person and month.
     """
 
-    @jwt_required
+    @jwt_required()
     def get(self, person_id, year, month):
         user_service.check_person_access(person_id)
         try:

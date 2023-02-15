@@ -452,8 +452,7 @@ class TodosResource(Resource):
 
 
 class ToChecksResource(Resource):
-
-    @jwt_required
+    @jwt_required()
     def get(self):
         """
         Return tasks requiring feedback for current user departments.
@@ -470,8 +469,6 @@ class ToChecksResource(Resource):
             return user_service.get_tasks_to_check()
         else:
             return []
-
-
 
 
 class DoneResource(Resource):
