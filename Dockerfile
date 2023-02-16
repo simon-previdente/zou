@@ -14,5 +14,5 @@ RUN cd /build_zou/ && python setup.py build && python setup.py install
 
 RUN mkdir -p /opt/zou/previews /opt/zou/zou /etc/zou /var/log/zou
 COPY docker-files/init_zou.sh /usr/local/bin/init_zou.sh
-COPY docker-files/gunicorn-events.conf docker-files/gunicorn.conf.py /etc/zou/
+COPY docker-files/gunicorn-events.conf.py docker-files/gunicorn.conf.py /etc/zou/
 RUN chmod 755 /usr/local/bin/init_zou.sh

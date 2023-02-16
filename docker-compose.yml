@@ -87,7 +87,7 @@ services:
   zou_event:
     image: zou
     working_dir: /opt/zou/zou
-    entrypoint: /usr/local/bin/gunicorn -c /etc/zou/gunicorn-events.conf -b 0.0.0.0:5001 zou.event_stream:app
+    entrypoint: /usr/local/bin/gunicorn -c /etc/zou/gunicorn-events.conf.py -b 0.0.0.0:5001 zou.event_stream:app
     volumes:
       - zou-data:/opt/zou
       - ./zou:/opt/zou/zou
