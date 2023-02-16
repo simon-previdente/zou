@@ -4,4 +4,6 @@ docker compose up zou_init
 
 docker compose up zou zou_event zou_job
 
+time docker compose up zou_test
+
 allure serve ./allure_results
