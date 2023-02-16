@@ -1,0 +1,107 @@
+---
+version: "3.9"
+
+volumes:
+  zou-db-data:
+    driver: local
+  zou-data:
+    driver: local
+
+services:
+
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_DB: zou
+      POSTGRES_USER: zou
+      POSTGRES_PASSWORD: zoupass
+    volumes:
+      - zou-db-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+    restart: always
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 18080:8080
+
+  zou_init:
+    build: .
+    image: zou
+    working_dir: /opt/zou/zou
+    entrypoint: /usr/local/bin/init_zou.sh
+    volumes:
+      - zou-data:/opt/zou
+      # - ./zou:/app/zou
+    depends_on:
+      - db
+      - redis
+    environment:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+      KV_HOST: redis
+      DB_HOST: db
+      DB_DATABASE: zou
+      DB_USERNAME: zou
+      DB_PASSWORD: zoupass
+      PREVIEW_FOLDER: /opt/zou/previews
+
+  zou:
+    image: zou
+    working_dir: /opt/zou
+    # command: 'while true ;do sleep 12 & wait $! ; echo yes;done'
+    # entrypoint: /bin/sh
+    # command: 'while true ;do sleep 12; echo yes;done'
+    # entrypoint: /usr/local/bin/gunicorn --help
+    # entrypoint: flask run --host 0.0.0.0
+    # entrypoint: /usr/local/bin/gunicorn -c /etc/zou/gunicorn.conf.py -b 0.0.0.0:5000 --chdir /opt/zou/zou --reload zou.app:app
+    entrypoint: python zou/debug.py
+    volumes:
+      - zou-data:/opt/zou
+      - ./zou:/opt/zou/zou
+    depends_on:
+      - db
+      - redis
+    environment:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+      KV_HOST: redis
+      DB_HOST: db
+      DB_DATABASE: zou
+      DB_USERNAME: zou
+      DB_PASSWORD: zoupass
+      PREVIEW_FOLDER: /opt/zou/previews
+      DEBUG: 1
+      MAIL_DEBUG: 1
+      FLASK_DEBUG: 1
+      FLASK_APP: zou.app
+      FLASK_ENV: development
+      HOST: 0.0.0.0
+    ports:
+      - 15000:5000
+
+  zou_event:
+    image: zou
+    working_dir: /opt/zou/zou
+    entrypoint: /usr/local/bin/gunicorn -c /etc/zou/gunicorn-events.conf -b 0.0.0.0:5001 zou.event_stream:app
+    volumes:
+      - zou-data:/opt/zou
+      - ./zou:/opt/zou/zou
+    depends_on:
+      - db
+      - redis
+    environment:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+      KV_HOST: redis
+      DB_HOST: db
+      DB_DATABASE: zou
+      DB_USERNAME: zou
+      DB_PASSWORD: zoupass
+      PREVIEW_FOLDER: /opt/zou/previews
+    ports:
+      - 15001:5001
