@@ -8,6 +8,7 @@ from zou.app.utils.env import envtobool
 PROPAGATE_EXCEPTIONS = True
 RESTFUL_JSON = {"ensure_ascii": False}
 DEBUG = envtobool("DEBUG", False)
+DEBUG_HOST = os.getenv("DEBUG_HOST", '127.0.0.1')
 DEBUG_PORT = int(os.getenv("DEBUG_PORT", 5000))
 
 APP_NAME = "Zou"
