@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --upgrade pip
 COPY requirements.txt setup.cfg setup.py /build_zou/
 COPY zou /build_zou/zou/
-RUN cd /build_zou/ && python setup.py build && python setup.py install
+RUN cd /build_zou/ && pip install -r requirements.txt && python setup.py build && python setup.py install
 
 RUN mkdir -p /opt/zou/previews /opt/zou/zou /etc/zou /var/log/zou
 COPY docker-files/init_zou.sh /usr/local/bin/init_zou.sh

@@ -10,7 +10,9 @@ volumes:
 services:
 
   db:
-    image: postgres:12
+    build:
+      dockerfile: Dockerfile-postgres
+    image: zou_postgres
     restart: always
     environment:
       POSTGRES_DB: zou
@@ -56,6 +58,7 @@ services:
     entrypoint: python zou/debug.py
     volumes:
       - zou-data:/opt/zou
+      - ./tests:/opt/zou/tests
       - ./zou:/opt/zou/zou
       - ./tmp:/tmp/zou
     depends_on:
@@ -122,6 +125,35 @@ services:
       KV_HOST: redis
       DB_HOST: db
       DB_DATABASE: zou
+      DB_USERNAME: zou
+      DB_PASSWORD: zoupass
+      PREVIEW_FOLDER: /opt/zou/previews
+      DEBUG: 1
+      MAIL_DEBUG: 1
+      FLASK_DEBUG: 1
+      FLASK_APP: zou.app
+      FLASK_ENV: development
+      DEBUG_HOST: 0.0.0.0
+      EVENT_STREAM_HOST: zou_event
+
+  zou_test:
+    image: zou
+    working_dir: /opt/zou
+    entrypoint: py.test
+    volumes:
+      - zou-data:/opt/zou
+      - ./tests:/opt/zou/tests
+      - ./zou:/opt/zou/zou
+      - ./tmp:/tmp/zou
+    depends_on:
+      - db
+      - redis
+    environment:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+      KV_HOST: redis
+      DB_HOST: db
+      DB_DATABASE: zoutest
       DB_USERNAME: zou
       DB_PASSWORD: zoupass
       PREVIEW_FOLDER: /opt/zou/previews
