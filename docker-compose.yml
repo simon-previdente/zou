@@ -139,11 +139,12 @@ services:
   zou_test:
     image: zou
     working_dir: /opt/zou
-    entrypoint: py.test
+    entrypoint: py.test --alluredir=/allure_results
     volumes:
       - zou-data:/opt/zou
       - ./tests:/opt/zou/tests
       - ./zou:/opt/zou/zou
+      - ./allure_results:/allure_results
       - ./tmp:/tmp/zou
     depends_on:
       - db
