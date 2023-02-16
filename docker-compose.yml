@@ -53,16 +53,11 @@ services:
   zou:
     image: zou
     working_dir: /opt/zou
-    # command: 'while true ;do sleep 12 & wait $! ; echo yes;done'
-    # entrypoint: /bin/sh
-    # command: 'while true ;do sleep 12; echo yes;done'
-    # entrypoint: /usr/local/bin/gunicorn --help
-    # entrypoint: flask run --host 0.0.0.0
-    # entrypoint: /usr/local/bin/gunicorn -c /etc/zou/gunicorn.conf.py -b 0.0.0.0:5000 --chdir /opt/zou/zou --reload zou.app:app
     entrypoint: python zou/debug.py
     volumes:
       - zou-data:/opt/zou
       - ./zou:/opt/zou/zou
+      - ./tmp:/tmp/zou
     depends_on:
       - db
       - redis
@@ -81,8 +76,11 @@ services:
       FLASK_APP: zou.app
       FLASK_ENV: development
       DEBUG_HOST: 0.0.0.0
+      EVENT_STREAM_HOST: zou_event
     ports:
       - 15000:5000
+    links:
+      - zou_event
 
   zou_event:
     image: zou
@@ -91,6 +89,7 @@ services:
     volumes:
       - zou-data:/opt/zou
       - ./zou:/opt/zou/zou
+      - ./tmp:/tmp/zou
     depends_on:
       - db
       - redis
@@ -105,3 +104,31 @@ services:
       PREVIEW_FOLDER: /opt/zou/previews
     ports:
       - 15001:5001
+
+  zou_job:
+    image: zou
+    working_dir: /opt/zou
+    entrypoint: "rq worker -c zou.job_settings"
+    volumes:
+      - zou-data:/opt/zou
+      - ./zou:/opt/zou/zou
+      - ./tmp:/tmp/zou
+    depends_on:
+      - db
+      - redis
+    environment:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+      KV_HOST: redis
+      DB_HOST: db
+      DB_DATABASE: zou
+      DB_USERNAME: zou
+      DB_PASSWORD: zoupass
+      PREVIEW_FOLDER: /opt/zou/previews
+      DEBUG: 1
+      MAIL_DEBUG: 1
+      FLASK_DEBUG: 1
+      FLASK_APP: zou.app
+      FLASK_ENV: development
+      DEBUG_HOST: 0.0.0.0
+      EVENT_STREAM_HOST: zou_event
