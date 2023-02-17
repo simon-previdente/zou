@@ -14,6 +14,6 @@ docker compose run --rm --entrypoint="py.test --alluredir=/allure_results tests/
 allure serve ./allure_results
 
 # With history:
-rm -rf allure_results ; mkdir allure_results ; mv allure-report/history allure_results/ ; docker compose run --entrypoint="py.test --alluredir=/allure_results tests/models/test_comments.py" zou_test ; allure generate --clean allure_results
+rm -rf allure_results ; mkdir allure_results ; mv allure-report/history allure_results/ ; docker compose run --rm --entrypoint="py.test --alluredir=/allure_results tests/models/test_comments.py" zou_test ; allure generate --clean allure_results
 
 (cd allure-report ; python3 -m http.server 8000)
