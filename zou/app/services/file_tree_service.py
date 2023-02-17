@@ -421,7 +421,7 @@ def update_variable(
     revision=1,
     style="lowercase",
 ):
-    variables = re.findall("<([\w\.]*)>", template)
+    variables = re.findall(r"<([\w\.]*)>", template)
 
     render = template
     for variable in variables:
@@ -758,7 +758,7 @@ def extract_variable_values_from_path(elements, template_elements):
     data_names = {}
 
     for i, template_element in enumerate(template_elements):
-        token = re.search("<(\w*)>", template_element)
+        token = re.search(r"<(\w*)>", template_element)
 
         if token is not None:
             data_type = token.group()
